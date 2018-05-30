@@ -2,20 +2,42 @@ pragma solidity ^0.4.17;
 
 contract IToldUSo{
 
-    mapping(bytes32 => address) textHashToOwner;
-    
-    //Events 
-    event LogTold(address whoTold, bytes32 textHash, string text);
+    struct Saying{
+        uint32 blockCount;
+        bytes32 textHash;
+        address teller;
+    }
 
-    function told(bytes32 textHash, string text) public {
+    Saying[] public sayings;
+    mapping(uint => address) sayingToOwner;
+    mapping(address => uint) ownerSayingCount;
+
+    //Events 
+    event LogTold(
+        uint32 blockCount, bytes32 textHash, 
+        address whoTold, string text);
+
+    function told(bytes32 textHash, string text) external {
         // require(text.lenght < 140);
         // require(textHash.lenght == 20); //???
 
-        textHashToOwner[textHash] = msg.sender;
-        emit LogTold(msg.sender, textHash, text);
+        uint32 blockCount = 1; //TODO : Get block count  
+        uint id = sayings.push(Saying(blockCount, textHash, msg.sender)) - 1;
+        sayingToOwner[id] = msg.sender;
+
+        emit LogTold(blockCount,  textHash, msg.sender, text);
     }
 
-    function verify(bytes32 textHash, address teller) public view returns(bool){
-        return textHashToOwner[textHash] == teller;
+    function verify(uint32 blockCount, bytes32 textHash, address teller) external view returns(bool){
+        for (uint i = 0; i < sayings.length; i++) {
+            if (
+                (sayings[i].teller == teller) &&
+                (sayings[i].textHash == textHash) &&
+                (sayings[i].blockCount == blockCount)
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 }
