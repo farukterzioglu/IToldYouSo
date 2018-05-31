@@ -27,6 +27,7 @@ contract IToldUSo{
 
         emit LogTold(blockCount,  textHash, msg.sender, text);
     }
+    //
 
     function verify(uint32 blockCount, bytes32 textHash, address teller) external view returns(bool){
         for (uint i = 0; i < sayings.length; i++) {
