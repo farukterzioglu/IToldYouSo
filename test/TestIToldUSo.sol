@@ -11,19 +11,21 @@ contract TestIToldUSo{
     IToldUSo throwableIToldUSo = IToldUSo(address(throwProxy));
 
 
-    bytes32 texthash = "12345678901234567890";
+    bytes32 texthash = "123456789012345678901234567890";
 
     function testHashLenght() public {
         instance.told(texthash, "text");
     }
 
     function testShouldVerify() public {
+        //TODO : test block number, replace '1'
+        instance.told(texthash, "text");        
         bool actual = instance.verify(1, texthash, this);
         Assert.equal(actual, true, "Didn't verify hashes!");
     }
 
     function testShouldNotVerify() public {
-        bool actual = instance.verify(1, "", this);
+        bool actual = instance.verify(1, "wrongtext", this);
         Assert.equal(actual, false, "Hashes shouldn't be verified!");
     }
 
@@ -33,11 +35,12 @@ contract TestIToldUSo{
         instance.told(texthash, "text");
 
         uint result = instance.getSayingCount();
-        Assert.equal(result, 3, "Count should match.");
+        Assert.equal(result, 4, "Count should match.");
     }
 
-    function testShouldThrowIfHashNot20(){
-        // address(throwableIToldUSo).call(abi.encodeWithSignature("told(bytes32, bytes32)", "1Def4Rt21", "Test"));
-        // throwProxy.shouldThrow();
-    }
+    //TODO : after implementing hash size check 
+    // function testShouldThrowIfHashNot20(){
+    //     address(throwableIToldUSo).call(abi.encodeWithSignature("told(bytes32, string)", "1Def4Rt21", "Test"));
+    //     throwProxy.shouldThrow();
+    // }
 }

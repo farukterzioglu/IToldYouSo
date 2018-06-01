@@ -27,7 +27,7 @@ contract IToldUSo{
         _;
     }
 
-    function told(bytes32 textHash, bytes32 text) external {
+    function told(bytes32 textHash, string text) external {
         // require(text.length <= textLength);
         // require(textHash.length == hashLength); 
 

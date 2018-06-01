@@ -49,7 +49,7 @@ App = {
         return iToldUSoInstance.getSayingCount.call();
       })
       .then(function(res){
-        var numberOfPets = res.toNumber();
+        var sayingCount = res.toNumber();
 
         console.log("Saying count : " + sayingCount);
         })
