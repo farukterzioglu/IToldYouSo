@@ -47,14 +47,10 @@ App = {
         iToldUSoInstance = instance;
         
         return iToldUSoInstance.getSayingCount.call();
-        // return iToldUSoInstance.getSayingsHashes().call(1);
-        
-        //TODO : implement getting data from events
-        // var sayings = [];
-        // return sayings;
-        // console.log("Sayings retrived.");
       })
-      .then(function(sayingCount){
+      .then(function(res){
+        var numberOfPets = res.toNumber();
+
         console.log("Saying count : " + sayingCount);
         })
     //   .then(function(sayings){
@@ -87,8 +83,10 @@ App = {
                 return iToldUSoInstance.told(textHash, text, {from: account});
             })
             .then(function(result){
-                App.listSayings();
                 console.log(result);
+                setTimeout(function() {
+                  App.listSayings();
+                }, 3000);
             }).catch(function(err) {
                 console.log(err.message);
             });
