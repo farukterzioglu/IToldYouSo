@@ -46,19 +46,27 @@ App = {
       .then(function(instance){
         iToldUSoInstance = instance;
         
-        //TODO : imlement getting data from events
-        var sayings = [];
-        return sayings;
-        console.log("Sayings retrived.");
+        return iToldUSoInstance.getSayingCount.call();
+        // return iToldUSoInstance.getSayingsHashes().call(1);
+        
+        //TODO : implement getting data from events
+        // var sayings = [];
+        // return sayings;
+        // console.log("Sayings retrived.");
       })
-      .then(function(sayings){
-        console.log("Sayings is being drawed....");
-        for (i = 0; i < sayings.length; i++) {
-            //TODO : Draw sayings 
-            console.log(sayings[i]);
-        }
-      }).catch(function(err) {
-        console.log(err.message);
+      .then(function(sayingCount){
+        console.log("Saying count : " + sayingCount);
+        })
+    //   .then(function(sayings){
+    //     console.log("Sayings is being drawed....");
+    //     console.log(sayings);
+    //     for (i = 0; i < sayings.length; i++) {
+    //         //TODO : Draw sayings 
+    //         console.log(sayings[i]);
+    //     }
+    //   })
+      .catch(function(err) {
+        console.error(err.message);
       });
     },
   
@@ -68,7 +76,6 @@ App = {
         //Data from UI
         var textHash = "123";
         var text = $('#iToldUThis').val();
-        console.log(text);
 
         web3.eth.getAccounts(function(error, accounts){
             if(error){ console.log(error); }
@@ -80,6 +87,7 @@ App = {
                 return iToldUSoInstance.told(textHash, text, {from: account});
             })
             .then(function(result){
+                App.listSayings();
                 console.log(result);
             }).catch(function(err) {
                 console.log(err.message);

@@ -25,9 +25,12 @@ contract IToldUSo{
         uint id = sayings.push(Saying(blockCount, textHash, msg.sender)) - 1;
         sayingToOwner[id] = msg.sender;
 
-        emit LogTold(blockCount,  textHash, msg.sender, text);
+        // emit LogTold(blockCount,  textHash, msg.sender, text);
     }
-    //
+    
+    function getSayingCount() external view returns(uint){
+        return sayings.length;
+    }
 
     function verify(uint32 blockCount, bytes32 textHash, address teller) external view returns(bool){
         for (uint i = 0; i < sayings.length; i++) {
