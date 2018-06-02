@@ -17,7 +17,7 @@ App = {
         App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
       }
   
-      web3 = new Web3(App.web3Provider);
+      App.web3 = new Web3(App.web3Provider);
       
       console.log("Web3 initialized.");
       return App.initContract();
@@ -36,43 +36,110 @@ App = {
     },
 
     bindEvents: function() {
-        $(document).on('click', '.btn-told', App.itoldU);
+      function hashFnv32a(str, asString, seed) {
+        /*jshint bitwise:false */
+        var i, l,
+            hval = (seed === undefined) ? 0x811c9dc5 : seed;
+    
+        for (i = 0, l = str.length; i < l; i++) {
+            hval ^= str.charCodeAt(i);
+            hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+        }
+        if( asString ){
+            // Convert to 8 digit hex string
+            return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+        }
+        return hval >>> 0;
+      }
+
+      $(document).on('click', '.btn-told', App.itoldU);
+
+      $( "#sayingText" ).keyup(function() {
+        var hashed = hashFnv32a($('#sayingText').val(), true);
+        $('#sayingHash').val(hashed);
+        console.log(hashed);
+      });
+
     },
   
     listSayings: function(adopters, account) {
       var iToldUSoInstance;
       
       App.contracts.IToldUSo.deployed()
+      //Get sayings 
       .then(function(instance){
         iToldUSoInstance = instance;
-        
         return iToldUSoInstance.getSayingCount.call();
       })
+      //Get count 
       .then(function(res){
         var sayingCount = res.toNumber();
 
         console.log("Saying count : " + sayingCount);
+        return sayingCount;
         })
-    //   .then(function(sayings){
-    //     console.log("Sayings is being drawed....");
-    //     console.log(sayings);
-    //     for (i = 0; i < sayings.length; i++) {
-    //         //TODO : Draw sayings 
-    //         console.log(sayings[i]);
-    //     }
-    //   })
+      //List sayings 
+      .then(function(sayingCount){
+        var promises = [];
+      
+        for(i = 0; i < sayingCount; i++) {
+          promises.push(iToldUSoInstance.getSaying.call(i))
+        }
+
+        Promise.all(promises).then(function(result) {
+          var sayingsRow = $('#sayingsRow');
+          var sayingTemplate = $('#sayingTemplate');
+          sayingsRow.empty();
+        
+
+          for(i = 0; i < sayingCount; i++) {
+            var text = App.web3.toAscii(result[i][1]);
+            sayingTemplate.find('.panel-title').text(text);
+            sayingTemplate.find('.btn-adopt').attr('data-block', result[i][0]);
+            sayingTemplate.find('.btn-adopt').attr('data-hash', result[i][1]);
+            sayingTemplate.find('.btn-adopt').attr('data-address', result[i][2]);
+
+            sayingsRow.append(sayingTemplate.html());
+
+            console.log("Block number : " + result[i][0]);
+            console.log("Text : " + text );
+            console.log("Address : " + result[i][2]);
+          }
+        });
+      })
       .catch(function(err) {
         console.error(err.message);
       });
     },
   
     itoldU : function(event){
+        function hashFnv32a(str, asString, seed) {
+          /*jshint bitwise:false */
+          var i, l,
+              hval = (seed === undefined) ? 0x811c9dc5 : seed;
+      
+          for (i = 0, l = str.length; i < l; i++) {
+              hval ^= str.charCodeAt(i);
+              hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+          }
+          if( asString ){
+              // Convert to 8 digit hex string
+              return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+          }
+          return hval >>> 0;
+        }
         event.preventDefault();
 
         //Data from UI
-        var textHash = "123";
-        var text = $('#iToldUThis').val();
+        var textHash = $('#sayingHash').val();
+        var text = $('#sayingText').val();
 
+        textHash = hashFnv32a(text, true);
+        
+        console.log(textHash);
+        console.log(text);
+
+        return;
         web3.eth.getAccounts(function(error, accounts){
             if(error){ console.log(error); }
         
@@ -86,9 +153,9 @@ App = {
                 console.log(result);
                 setTimeout(function() {
                   App.listSayings();
-                }, 3000);
+                }, 15000);
             }).catch(function(err) {
-                console.log(err.message);
+                console.error(err.message);
             });
         });
     },

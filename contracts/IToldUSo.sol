@@ -31,7 +31,7 @@ contract IToldUSo{
         // require(text.length <= textLength);
         // require(textHash.length == hashLength); 
 
-        uint32 blockCount = 1; //TODO : Get block count  
+        uint32 blockCount = uint32(sayings.length + 1); //TODO : Get block count  
         uint id = sayings.push(Saying(blockCount, textHash, msg.sender)) - 1;
         sayingToOwner[id] = msg.sender;
 
