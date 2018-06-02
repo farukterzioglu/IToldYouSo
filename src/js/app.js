@@ -1,3 +1,19 @@
+function hashFnv32a(str, asString, seed) {
+  /*jshint bitwise:false */
+  var i, l,
+      hval = (seed === undefined) ? 0x811c9dc5 : seed;
+
+  for (i = 0, l = str.length; i < l; i++) {
+      hval ^= str.charCodeAt(i);
+      hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+  }
+  if( asString ){
+      // Convert to 8 digit hex string
+      return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
+  }
+  return hval >>> 0;
+}
+
 App = {
     web3Provider: null,
     contracts: {},
@@ -36,28 +52,11 @@ App = {
     },
 
     bindEvents: function() {
-      function hashFnv32a(str, asString, seed) {
-        /*jshint bitwise:false */
-        var i, l,
-            hval = (seed === undefined) ? 0x811c9dc5 : seed;
-    
-        for (i = 0, l = str.length; i < l; i++) {
-            hval ^= str.charCodeAt(i);
-            hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
-        }
-        if( asString ){
-            // Convert to 8 digit hex string
-            return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
-        }
-        return hval >>> 0;
-      }
-
       $(document).on('click', '.btn-told', App.itoldU);
 
       $( "#sayingText" ).keyup(function() {
         var hashed = hashFnv32a($('#sayingText').val(), true);
         $('#sayingHash').val(hashed);
-        console.log(hashed);
       });
 
     },
@@ -71,17 +70,11 @@ App = {
         iToldUSoInstance = instance;
         return iToldUSoInstance.getSayingCount.call();
       })
-      //Get count 
+      //List sayings 
       .then(function(res){
         var sayingCount = res.toNumber();
 
-        console.log("Saying count : " + sayingCount);
-        return sayingCount;
-        })
-      //List sayings 
-      .then(function(sayingCount){
         var promises = [];
-      
         for(i = 0; i < sayingCount; i++) {
           promises.push(iToldUSoInstance.getSaying.call(i))
         }
@@ -91,19 +84,17 @@ App = {
           var sayingTemplate = $('#sayingTemplate');
           sayingsRow.empty();
         
-
           for(i = 0; i < sayingCount; i++) {
             var text = App.web3.toAscii(result[i][1]);
+            text += ", Block " + result[i][0];
+            text += ", Address : " + result[i][2];
+            
             sayingTemplate.find('.panel-title').text(text);
             sayingTemplate.find('.btn-adopt').attr('data-block', result[i][0]);
             sayingTemplate.find('.btn-adopt').attr('data-hash', result[i][1]);
             sayingTemplate.find('.btn-adopt').attr('data-address', result[i][2]);
 
             sayingsRow.append(sayingTemplate.html());
-
-            console.log("Block number : " + result[i][0]);
-            console.log("Text : " + text );
-            console.log("Address : " + result[i][2]);
           }
         });
       })
@@ -113,33 +104,15 @@ App = {
     },
   
     itoldU : function(event){
-        function hashFnv32a(str, asString, seed) {
-          /*jshint bitwise:false */
-          var i, l,
-              hval = (seed === undefined) ? 0x811c9dc5 : seed;
-      
-          for (i = 0, l = str.length; i < l; i++) {
-              hval ^= str.charCodeAt(i);
-              hval += (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
-          }
-          if( asString ){
-              // Convert to 8 digit hex string
-              return ("0000000" + (hval >>> 0).toString(16)).substr(-8);
-          }
-          return hval >>> 0;
-        }
         event.preventDefault();
 
         //Data from UI
+        // var text = $('#sayingText').val();
+        // var textHash = "";//hashFnv32a(text, true);
+
         var textHash = $('#sayingHash').val();
         var text = $('#sayingText').val();
 
-        textHash = hashFnv32a(text, true);
-        
-        console.log(textHash);
-        console.log(text);
-
-        return;
         web3.eth.getAccounts(function(error, accounts){
             if(error){ console.log(error); }
         
@@ -147,13 +120,16 @@ App = {
         
             App.contracts.IToldUSo.deployed()
             .then(function(iToldUSoInstance){
-                return iToldUSoInstance.told(textHash, text, {from: account});
+              console.log(text + "," + textHash);
+
+              return iToldUSoInstance.told(textHash, text, {from: account});
             })
             .then(function(result){
                 console.log(result);
                 setTimeout(function() {
+                  console.log("Listing sayings...");
                   App.listSayings();
-                }, 15000);
+                }, 6000);
             }).catch(function(err) {
                 console.error(err.message);
             });
