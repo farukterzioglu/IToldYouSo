@@ -44,10 +44,10 @@ App = {
         var artifact = data;
         App.contracts.IToldUSo = TruffleContract(artifact);
         App.contracts.IToldUSo.setProvider(App.web3Provider);
+
+        console.log("Contract initialized.");
         return App.listSayings();
       });
-  
-      console.log("Contract initialized.");
       return App.bindEvents();
     },
 

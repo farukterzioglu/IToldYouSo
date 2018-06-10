@@ -3,8 +3,8 @@ pragma solidity ^0.4.17;
 contract IToldUSo{
 
     struct Saying{
-        uint32 blockCount;
-        bytes32 textHash;
+        uint blockCount;
+        bytes20 textHash;
         address teller;
     }
 
@@ -18,7 +18,7 @@ contract IToldUSo{
     
     //Events 
     event LogTold(
-        uint32 blockCount, bytes32 textHash, 
+        uint32 blockCount, bytes20 textHash, 
         address whoTold, string text);
 
     //Modifiers
@@ -27,18 +27,18 @@ contract IToldUSo{
         _;
     }
 
-    function told(bytes32 textHash, string text) external {
+    function told(bytes20 textHash, string text) external {
         // require(text.length <= textLength);
         // require(textHash.length == hashLength); 
 
-        uint32 blockCount = uint32(sayings.length + 1); //TODO : Get block count  
+        uint blockCount = block.number;  
         uint id = sayings.push(Saying(blockCount, textHash, msg.sender)) - 1;
         sayingToOwner[id] = msg.sender;
 
         // emit LogTold(blockCount,  textHash, msg.sender, text);
     }
     
-    function getSaying(uint id) validSaying(id) public view returns (uint32, bytes32, address){
+    function getSaying(uint id) validSaying(id) public view returns (uint, bytes20, address){
         Saying memory saying = sayings[id];
         return (saying.blockCount, saying.textHash, saying.teller);
     }
@@ -47,7 +47,10 @@ contract IToldUSo{
         return sayings.length;
     }
 
-    function verify(uint32 blockCount, bytes32 textHash, address teller) external view returns(bool){
+    function verify(uint32 blockCount, bytes20 textHash, address teller) external view returns(bool){
+        require(blockCount > 0);
+        require(teller != 0x0); //TODO : ?? 
+
         for (uint i = 0; i < sayings.length; i++) {
             if (
                 (sayings[i].teller == teller) &&
@@ -58,5 +61,8 @@ contract IToldUSo{
             }
         }
         return false;
+    }
+
+    function () payable public {
     }
 }
