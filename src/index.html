@@ -1,78 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>I Told You So</title>
+<head>
+  <meta charset="utf-8">
+  <title>IToldUSo</title>
+  <base href="/">
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    
-  </head>
-  <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <h1 class="text-center">I Told You So</h1>
-          <hr/>
-          <br/>  
-        </div>
-      </div>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
 
-      <div class="row">
-        <div class="col-xs-12 col-sm-8 col-sm-push-2">
-          <div class="panel panel-default panel-pet">
-            <div class="panel-heading">
-              <h3 class="panel-title text-center">Told something</h3>
-            </div>
-            <div class="panel-body">
-              <div class="form-group row">
-                <label for="btn-told" class="col-sm-2 col-form-label">Your text</label>
-                <div class="col-sm-10">
-                  <input type="text" id="sayingText" class="form-control" placeholder="...">
-                </div>
-              </div>
-              
-              <div class="form-group row">
-                <label for="textHash" class="col-sm-2 col-form-label">Hash</label>
-                <div class="col-sm-10">
-                  <input class="form-control" id="sayingHash" type="text" placeholder="####" readonly>
-                </div>
-              </div>
-
-              <button type="submit"  class="btn btn-primary btn-told">Submit</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="sayingsRow" class="row">
-        <!-- SAYINGS LOAD HERE -->
-      </div>
-    </div>
-
-    <div id="sayingTemplate" style="display: none;">
-      <div class="col-xs-12 col-sm-8 col-sm-push-2">
-        <div class="panel panel-default panel-pet">
-          <div class="panel-heading">
-            <h3 class="panel-title">Scrappy</h3>
-          </div>
-          <div class="panel-body">
-            <button class="btn btn-default btn-adopt" type="button" data-id="0">Verify</button>
-            <button class="btn btn-default btn-adopt" type="button" data-id="0">Share</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/web3.min.js"></script>
-    <script src="js/truffle-contract.js"></script>
-    <script src="js/app.js"></script>
-  </body>
+  <script src="assets/web3.min.js"></script>
+  <script src="assets/truffle-contract.js"></script>
+</body>
 </html>
