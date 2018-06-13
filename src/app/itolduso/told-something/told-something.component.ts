@@ -10,4 +10,6 @@ export class ToldSomethingComponent implements OnInit{
     ngOnInit(): void {
       console.log("Init : ToldSomethingComponent");
       }
+
+    // constructor
 }
