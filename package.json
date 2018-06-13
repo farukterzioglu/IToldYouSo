@@ -20,7 +20,8 @@
   "devDependencies": {
     "bootstrap": "^4.1.1",
     "jquery": "^3.3.1",
-    "lite-server": "^2.3.0"
+    "lite-server": "^2.3.0",
+    "truffle-contract": "^3.0.4"
   },
   "dependencies": {
     "@angular-devkit/build-angular": "~0.6.8",

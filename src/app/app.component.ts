@@ -22,12 +22,6 @@ export class AppComponent {
 
   iToldYou(): void {
     console.log(`${this.sayingText} - ${this.hashedText}`);
-    // //Data from UI
-    // // var text = $('#sayingText').val();
-    // // var textHash = "";//hashFnv32a(text, true);
-
-    // var textHash = $('#sayingHash').val();
-    // var text = $('#sayingText').val();
 
     // web3.eth.getAccounts(function(error, accounts){
     //     if(error){ console.log(error); }
