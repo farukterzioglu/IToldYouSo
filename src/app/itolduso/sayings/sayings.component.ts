@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Web3Service } from "../../util/web3.service";
-import { Saying } from "./saying";
+import { IToldUSoContractService } from "../itolduso.service";
+import { Saying } from "../saying";
+
+declare let require: any;
+const contractArtifacts = require("../../../../build/contracts/IToldUSo.json");
 
 @Component({
   selector: 'app-sayings',
@@ -8,12 +11,16 @@ import { Saying } from "./saying";
   styleUrls: ['./sayings.component.css']
 })
 export class SayingsComponent implements OnInit {
+  IToldUYouSo: any;
   sayings : Saying[];
 
-  constructor() { }
+  constructor(private iToldUSoContractService : IToldUSoContractService) { }
 
-  ngOnInit() {
-    console.log("Init : SayingsComponent");
+  async ngOnInit() {
+    await this.iToldUSoContractService.initializeContract();
+
+    let count : number = await this.iToldUSoContractService.getSayingCount();
+    console.log(`Count : ${count}`);
 
     this.sayings = [
       { address : "123", text : "asd", hash : "xxx", timestamp : "1"},

@@ -11,6 +11,8 @@ export class ToldSomethingComponent implements OnInit{
   sayingText :string;
   hashedText : string | number; 
 
+  constructor(private web3Service : Web3Service){}
+
   ngOnInit(): void {
     console.log("Init : ToldSomethingComponent"); 
   }
