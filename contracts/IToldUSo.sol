@@ -4,7 +4,7 @@ contract IToldUSo{
 
     struct Saying{
         uint blockCount;
-        bytes20 textHash;
+        bytes8 textHash;
         address teller;
     }
 
@@ -18,7 +18,7 @@ contract IToldUSo{
     
     //Events 
     event LogTold(
-        uint32 blockCount, bytes20 textHash, 
+        uint256 blockCount, bytes8 textHash, 
         address whoTold, string text);
 
     //Modifiers
@@ -27,18 +27,18 @@ contract IToldUSo{
         _;
     }
 
-    function told(bytes20 textHash, string text) external {
+    function told(bytes8 textHash, string text) external {
         // require(text.length <= textLength);
         // require(textHash.length == hashLength); 
 
-        uint blockCount = block.number;  
+        uint256 blockCount = block.number;  
         uint id = sayings.push(Saying(blockCount, textHash, msg.sender)) - 1;
         sayingToOwner[id] = msg.sender;
 
-        // emit LogTold(blockCount,  textHash, msg.sender, text);
+        emit LogTold(blockCount,  textHash, msg.sender, text);
     }
     
-    function getSaying(uint id) validSaying(id) public view returns (uint, bytes20, address){
+    function getSaying(uint id) validSaying(id) public view returns (uint, bytes8, address){
         Saying memory saying = sayings[id];
         return (saying.blockCount, saying.textHash, saying.teller);
     }

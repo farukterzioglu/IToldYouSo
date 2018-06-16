@@ -55,10 +55,30 @@ export class IToldUSoService{
 		return deployedContrat.getSayingCount.call();
 	}
 
+	public async getSaying(index: number): Promise<any> {
+		if(!this.IToldUYouSo) await this.initializeContract();
+
+		let contract = await this.IToldUYouSo.deployed();
+		let saying = await contract.getSaying.call(index);
+
+		//TODO : Get text by event filtering
+		let result : Saying = {
+			text : this.web3Service.web3.toAscii(saying[1]),
+			hash : this.web3Service.web3.toAscii(saying[1]),
+			address : saying[2],
+			timestamp : saying[0]
+		}; 
+		return result;
+  }
+
+	//https://ethereum.stackexchange.com/questions/23058/web3-return-bytes32-string
 	public async toldSometing(text : string, textHash : string | number){
 		try {
 			const contract = await this.IToldUYouSo.deployed();
-			return contract.told(textHash, text, {from : this.account});
+			return contract.told(
+				this.web3Service.web3.fromAscii(textHash), 
+				this.web3Service.web3.fromAscii(text), 
+				{from : this.account});
 		} catch (error) {
 			console.error(error);
 		}

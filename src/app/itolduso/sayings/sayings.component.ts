@@ -19,19 +19,22 @@ export class SayingsComponent implements OnInit {
   constructor(
     private iToldUSoService : IToldUSoService,
     private web3Service : Web3Service
-  ) { }
+  ) { 
+    this.sayings = new Array<Saying>();
+  }
 
   async ngOnInit() {
     this.drawSayings();
   }
 
   async drawSayings(){
-    this.sayings = [
-      { address : "123", text : "asd", hash : "xxx", timestamp : "1"},
-      { address : "456", text : "qwe", hash : "yyy", timestamp : "2"}
-    ];
-
     let count : number = await this.iToldUSoService.getSayingCount();
     console.log(`Count : ${count}`);
+    
+    for (let index = 0; index < count; index++) {
+      let saying =await this.iToldUSoService.getSaying(index);
+      this.sayings.push(saying);  
+      console.log(saying);
+    }
   }
 }

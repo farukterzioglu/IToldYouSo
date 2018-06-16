@@ -28,6 +28,8 @@ export class ToldSomethingComponent implements OnInit{
 
     let result = await this.iToldUSoService.toldSometing(this.sayingText, this.hashedText);
     console.log(result);
+
+    //TODO : fire event for sayings component to refresh
   }
  
   private hashFnv32a(str, asString, seed) {
