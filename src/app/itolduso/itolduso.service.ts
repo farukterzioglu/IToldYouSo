@@ -66,7 +66,7 @@ export class IToldUSoService{
 			text : this.web3Service.web3.toAscii(saying[1]),
 			hash : this.web3Service.web3.toAscii(saying[1]),
 			address : saying[2],
-			timestamp : saying[0]
+			blockCount : saying[0].toString(10)
 		}; 
 		return result;
   }

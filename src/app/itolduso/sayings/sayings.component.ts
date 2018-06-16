@@ -3,9 +3,6 @@ import { Web3Service } from "../../util/web3.service";
 import { IToldUSoService } from "../itolduso.service";
 import { Saying } from "../saying";
 
-declare let require: any;
-const contractArtifacts = require("../../../../build/contracts/IToldUSo.json");
-
 @Component({
   selector: 'app-sayings',
   templateUrl: './sayings.component.html',
@@ -29,12 +26,10 @@ export class SayingsComponent implements OnInit {
 
   async drawSayings(){
     let count : number = await this.iToldUSoService.getSayingCount();
-    console.log(`Count : ${count}`);
     
     for (let index = 0; index < count; index++) {
       let saying =await this.iToldUSoService.getSaying(index);
       this.sayings.push(saying);  
-      console.log(saying);
     }
   }
 }
