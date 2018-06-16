@@ -15,9 +15,7 @@ export class ToldSomethingComponent implements OnInit{
   constructor(private iToldUSoContractService : IToldUSoContractService) { }
 
   async ngOnInit(){
-    console.log("Init : ToldSomethingComponent"); 
-    await this.iToldUSoContractService.initializeContract();
-
+    console.log("Initializing 'Told Something' component..."); 
   }
 
   getHash(term : string): void {
