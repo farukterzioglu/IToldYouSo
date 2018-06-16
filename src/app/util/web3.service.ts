@@ -10,12 +10,11 @@ declare let window: any;
 @Injectable()
 export class Web3Service{
     private web3 : any;
+    private web3Provider: null;
     private accounts: string[];
+
     public ready = false;
     public accountsObservable = new Subject<string[]>();
-
-    private web3Provider: null;
-    private contracts: {};
 
     constructor() {
         window.addEventListener('load', (event) => {
@@ -34,11 +33,17 @@ export class Web3Service{
         
         this.web3 = new Web3(this.web3Provider);
         console.log("Web3 initialized.");
-
-        setInterval(() => this.initContract(), 100);
     }
 
-    initContract(){
-        
-    }
+    public async artifactsToContract(artifacts) {
+        if (!this.web3) {
+          const delay = new Promise(resolve => setTimeout(resolve, 100));
+          await delay;
+          return await this.artifactsToContract(artifacts);
+        }
+    
+        const contractAbstraction = contract(artifacts);
+        contractAbstraction.setProvider(this.web3.currentProvider);
+        return contractAbstraction;
+      }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Web3Service } from "../../util/web3.service";
+import { IToldUSoContractService } from "../itolduso.service";
+import { Saying } from "../saying";
 
 @Component({
   selector: 'told-something',
@@ -11,10 +12,12 @@ export class ToldSomethingComponent implements OnInit{
   sayingText :string;
   hashedText : string | number; 
 
-  constructor(private web3Service : Web3Service){}
+  constructor(private iToldUSoContractService : IToldUSoContractService) { }
 
-  ngOnInit(): void {
+  async ngOnInit(){
     console.log("Init : ToldSomethingComponent"); 
+    await this.iToldUSoContractService.initializeContract();
+
   }
 
   getHash(term : string): void {

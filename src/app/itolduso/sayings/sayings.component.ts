@@ -17,14 +17,14 @@ export class SayingsComponent implements OnInit {
   constructor(private iToldUSoContractService : IToldUSoContractService) { }
 
   async ngOnInit() {
-    await this.iToldUSoContractService.initializeContract();
+    this.iToldUSoContractService.initializeContract().then( async () => {
+      let count : number = await this.iToldUSoContractService.getSayingCount();
+      console.log(`Count : ${count}`);
 
-    let count : number = await this.iToldUSoContractService.getSayingCount();
-    console.log(`Count : ${count}`);
-
-    this.sayings = [
-      { address : "123", text : "asd", hash : "xxx", timestamp : "1"},
-      { address : "456", text : "qwe", hash : "yyy", timestamp : "2"}
-    ];
+      this.sayings = [
+        { address : "123", text : "asd", hash : "xxx", timestamp : "1"},
+        { address : "456", text : "qwe", hash : "yyy", timestamp : "2"}
+      ];
+    });
   }
 }
