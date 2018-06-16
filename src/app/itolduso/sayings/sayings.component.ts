@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Web3Service } from "../../util/web3.service";
-import { IToldUSoContractService } from "../itolduso.service";
+import { IToldUSoService } from "../itolduso.service";
 import { Saying } from "../saying";
 
 declare let require: any;
@@ -17,39 +17,21 @@ export class SayingsComponent implements OnInit {
   account : string;
 
   constructor(
-    private iToldUSoContractService : IToldUSoContractService,
+    private iToldUSoService : IToldUSoService,
     private web3Service : Web3Service
   ) { }
 
   async ngOnInit() {
+    this.drawSayings();
+  }
+
+  async drawSayings(){
     this.sayings = [
       { address : "123", text : "asd", hash : "xxx", timestamp : "1"},
       { address : "456", text : "qwe", hash : "yyy", timestamp : "2"}
     ];
 
-    this.watchAccount();
-    this.drawSayings();
-  }
-
-  watchAccount() {
-    this.iToldUSoContractService.accountsObservable.subscribe((accounts) => {
-      console.log(`Account changed : ${accounts[0]}"`);
-
-      this.account = accounts[0];
-      this.drawSayings();
-    });
-  }
-
-  async drawSayings(){
-    let count : number = await this.iToldUSoContractService.getSayingCount();
+    let count : number = await this.iToldUSoService.getSayingCount();
     console.log(`Count : ${count}`);
-    // this.web3Service.getAccounts((err, accs) => {
-		// 	if (err != null) {
-    //     console.warn('There was an error fetching your accounts.');
-    //     return;
-		// 	}
-      
-    //   console.log(accs);
-		// });
   }
 }

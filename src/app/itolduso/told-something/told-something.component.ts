@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { IToldUSoContractService } from "../itolduso.service";
+import { IToldUSoService } from "../itolduso.service";
 import { Saying } from "../saying";
 
 @Component({
@@ -12,7 +12,7 @@ export class ToldSomethingComponent implements OnInit{
   sayingText :string;
   hashedText : string | number; 
 
-  constructor(private iToldUSoContractService : IToldUSoContractService) { }
+  constructor(private iToldUSoService : IToldUSoService) { }
 
   async ngOnInit(){
     console.log("Initializing 'Told Something' component..."); 
@@ -23,30 +23,11 @@ export class ToldSomethingComponent implements OnInit{
     this.hashedText = this.hashFnv32a(term, true, undefined);
   }
   
-  iToldYou(): void {
+  async iToldYou(): Promise<void> {
     console.log(`${this.sayingText} - ${this.hashedText}`);
 
-    // web3.eth.getAccounts(function(error, accounts){
-    //     if(error){ console.log(error); }
-    
-    //     var account = accounts[0];
-    
-    //     App.contracts.IToldUSo.deployed()
-    //     .then(function(iToldUSoInstance){
-    //       console.log(text + "," + textHash);
-
-    //       return iToldUSoInstance.told(textHash, text, {from: account});
-    //     })
-    //     .then(function(result){
-    //         console.log(result);
-    //         setTimeout(function() {
-    //           console.log("Listing sayings...");
-    //           App.listSayings();
-    //         }, 6000);
-    //     }).catch(function(err) {
-    //         console.error(err.message);
-    //     });
-    // });
+    let result = await this.iToldUSoService.toldSometing(this.sayingText, this.hashedText);
+    console.log(result);
   }
  
   private hashFnv32a(str, asString, seed) {

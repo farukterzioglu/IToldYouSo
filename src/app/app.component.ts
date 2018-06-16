@@ -9,6 +9,6 @@ export class AppComponent {
   title = 'app';
   
   ngOnInit() {
-    console.log("Init...");
+    console.log("Initializing application...");
   }
 }

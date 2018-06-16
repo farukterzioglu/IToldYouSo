@@ -8,14 +8,18 @@ declare let require: any;
 const contractArtifacts = require("../../../build/contracts/IToldUSo.json");
 
 @Injectable({providedIn: 'root'})
-export class IToldUSoContractService{
+export class IToldUSoService{
 	IToldUYouSo: any;
   sayings : Saying[];
 	initializing : boolean;
-	
+	account : any;
+
   public accountsObservable = new Subject<string[]>();
 
-	constructor(private web3Service : Web3Service){}
+	constructor(private web3Service : Web3Service){
+		this.accountsObservable = this.web3Service.accountsObservable;
+		this.watchAccount();
+	}
 	
 	public async initializeContract() : Promise<void>{
 		console.log("Invoked 'initializeContract'");
@@ -51,12 +55,18 @@ export class IToldUSoContractService{
 		return deployedContrat.getSayingCount.call();
 	}
 
-	public async toldSometing(text : string, textHash : string, account : string){
+	public async toldSometing(text : string, textHash : string | number){
 		try {
 			const contract = await this.IToldUYouSo.deployed();
-			return contract.told(textHash, text, {from : account});
+			return contract.told(textHash, text, {from : this.account});
 		} catch (error) {
 			console.error(error);
 		}
 	}
+
+	private watchAccount() {
+    this.web3Service.accountsObservable.subscribe((accounts) => {
+			this.account = accounts[0];
+    });
+  }
 }
