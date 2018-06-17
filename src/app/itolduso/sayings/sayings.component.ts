@@ -27,9 +27,21 @@ export class SayingsComponent implements OnInit {
       this.sayings.unshift(saying);  
     });
 
-    this.iToldUSoService.subscribeToLogTold( (error : Error, saying : Saying) =>{
-      console.log(saying);
-    });
+    let func = (error : Error, saying : Saying) =>{
+      if(saying == undefined){
+        console.error("saying is undefined!");
+        console.log(saying);
+        return;
+      }
+
+      let hash : string = this.iToldUSoService.toAscii(saying.hash);
+			let sayingFound : Saying = this.sayings.filter( x => x.hash === hash)[0];
+			// address : string;
+      sayingFound.text = this.iToldUSoService.toAscii(saying.text);
+    };
+
+    this.iToldUSoService.subscribeToLogTold(func);
+    this.iToldUSoService.queryAllLogTolds(func);
   }
 
   async drawSayings(){

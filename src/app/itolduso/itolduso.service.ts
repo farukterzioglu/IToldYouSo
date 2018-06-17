@@ -50,7 +50,7 @@ export class IToldUSoService{
 
 	public async subscribeToLogTold(callback : (error : Error, result : Saying) => void ) : Promise<void> {
 		if(!this.IToldUYouSo) await this.initializeContract();
-		
+
 		const deployedContrat = await this.IToldUYouSo.deployed();
 		
 		var myEvent = deployedContrat.LogTold();
@@ -65,13 +65,35 @@ export class IToldUSoService{
 				address : address,
 				blockCount : "1"
 			});
+		});
+	}
 
-			// console.log(this.sayings);
-			// let sayingFound : Saying = this.sayings.filter(saying => saying.hash === hash);
-			// address : string;
+	public async queryAllLogTolds(callback : (error : Error, result : Saying) => void ) : Promise<void> {
+		if(!this.IToldUYouSo) await this.initializeContract();
 
-			// console.log(result);
-			// console.log(sayingFound);
+		const deployedContrat = await this.IToldUYouSo.deployed();
+		
+		var myEvent = deployedContrat.LogTold({fromBlock: 0, toBlock: 'latest'});
+		myEvent.get(function(error, result){
+			if (error != null) {
+				console.warn('There was an error!');
+				console.error();
+				return;
+			}
+
+			console.log(result);
+			return;
+			
+			let text : string = result.args.text;
+			let hash : string = result.args.textHash;
+			let address : string = result.args.whoTold; 
+
+			callback(error, {
+				text : text,
+				hash : hash,
+				address : address,
+				blockCount : "1"
+			});
 		});
 	}
 
@@ -90,7 +112,7 @@ export class IToldUSoService{
 
 		//TODO : Get text by event filtering
 		let result : Saying = {
-			text : "TODO", //this.web3Service.web3.toAscii(saying[1]),
+			text : "",
 			hash : this.web3Service.web3.toAscii(saying[1]),
 			address : saying[2],
 			blockCount : saying[0].toString(10)
@@ -98,6 +120,9 @@ export class IToldUSoService{
 		return result;
   }
 
+	public toAscii(text : string | number) : string{
+		return this.web3Service.web3.toAscii(text);
+	}
 	//https://ethereum.stackexchange.com/questions/23058/web3-return-bytes32-string
 	public async toldSometing(text : string, textHash : string | number) : Promise<any> {
 		try {
@@ -111,7 +136,7 @@ export class IToldUSoService{
 			let result = await toldPromise;	
 			
 			let saying : Saying = {
-				text : "TODO",
+				text : "",
 				hash : textHash,
 				address : this.account,
 				blockCount : result.receipt.blockNumber,
