@@ -14,6 +14,7 @@ export class IToldUSoService{
 	initializing : boolean;
 	account : any;
 
+	public newSayingObservable = new Subject<Saying>();
   public accountsObservable = new Subject<string[]>();
 
 	constructor(private web3Service : Web3Service){
@@ -63,7 +64,7 @@ export class IToldUSoService{
 
 		//TODO : Get text by event filtering
 		let result : Saying = {
-			text : this.web3Service.web3.toAscii(saying[1]),
+			text : "TODO", //this.web3Service.web3.toAscii(saying[1]),
 			hash : this.web3Service.web3.toAscii(saying[1]),
 			address : saying[2],
 			blockCount : saying[0].toString(10)
@@ -72,13 +73,27 @@ export class IToldUSoService{
   }
 
 	//https://ethereum.stackexchange.com/questions/23058/web3-return-bytes32-string
-	public async toldSometing(text : string, textHash : string | number){
+	public async toldSometing(text : string, textHash : string | number) : Promise<any> {
 		try {
 			const contract = await this.IToldUYouSo.deployed();
-			return contract.told(
+			
+			let toldPromise = contract.told(
 				this.web3Service.web3.fromAscii(textHash), 
 				this.web3Service.web3.fromAscii(text), 
 				{from : this.account});
+
+			let result = await toldPromise;	
+			
+			let saying : Saying = {
+				text : "TODO",
+				hash : textHash,
+				address : this.account,
+				blockCount : result.receipt.blockNumber,
+			};
+
+			this.newSayingObservable.next(saying);
+			
+			return toldPromise;
 		} catch (error) {
 			console.error(error);
 		}

@@ -22,12 +22,18 @@ export class SayingsComponent implements OnInit {
 
   async ngOnInit() {
     this.drawSayings();
+
+    this.iToldUSoService.newSayingObservable.subscribe((saying : Saying) => {
+      this.sayings.unshift(saying);  
+    });
   }
 
   async drawSayings(){
+    this.sayings = new Array<Saying>();
+
     let count : number = await this.iToldUSoService.getSayingCount();
     
-    for (let index = 0; index < count; index++) {
+    for (let index = count -1 ; index >= 0; index--) {
       let saying =await this.iToldUSoService.getSaying(index);
       this.sayings.push(saying);  
     }
