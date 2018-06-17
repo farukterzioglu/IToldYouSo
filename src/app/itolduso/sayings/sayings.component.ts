@@ -26,6 +26,10 @@ export class SayingsComponent implements OnInit {
     this.iToldUSoService.newSayingObservable.subscribe((saying : Saying) => {
       this.sayings.unshift(saying);  
     });
+
+    this.iToldUSoService.subscribeToLogTold( (error : Error, saying : Saying) =>{
+      console.log(saying);
+    });
   }
 
   async drawSayings(){

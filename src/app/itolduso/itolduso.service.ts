@@ -10,7 +10,6 @@ const contractArtifacts = require("../../../build/contracts/IToldUSo.json");
 @Injectable({providedIn: 'root'})
 export class IToldUSoService{
 	IToldUYouSo: any;
-  sayings : Saying[];
 	initializing : boolean;
 	account : any;
 
@@ -47,6 +46,33 @@ export class IToldUSoService{
 			console.log("Contract created.");
 			this.initializing = false;
     });
+	}
+
+	public async subscribeToLogTold(callback : (error : Error, result : Saying) => void ) : Promise<void> {
+		if(!this.IToldUYouSo) await this.initializeContract();
+		
+		const deployedContrat = await this.IToldUYouSo.deployed();
+		
+		var myEvent = deployedContrat.LogTold();
+		myEvent.watch(function(error, result){
+			let text : string = result.args.text;
+			let hash : string = result.args.textHash;
+			let address : string = result.args.whoTold; 
+
+			callback(error, {
+				text : text,
+				hash : hash,
+				address : address,
+				blockCount : "1"
+			});
+
+			// console.log(this.sayings);
+			// let sayingFound : Saying = this.sayings.filter(saying => saying.hash === hash);
+			// address : string;
+
+			// console.log(result);
+			// console.log(sayingFound);
+		});
 	}
 
 	public async getSayingCount() : Promise<number>{
