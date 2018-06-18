@@ -24,10 +24,7 @@ export class ToldSomethingComponent implements OnInit{
   }
   
   async iToldYou(): Promise<void> {
-    console.log(`${this.sayingText} - ${this.hashedText}`);
-
     let result = await this.iToldUSoService.toldSometing(this.sayingText, this.hashedText);
-    console.log(result);
   }
  
   private hashFnv32a(str, asString, seed) {

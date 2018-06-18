@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Web3Service } from "../../util/web3.service";
 import { IToldUSoService } from "../itolduso.service";
 import { Saying } from "../saying";
+import { tryParse } from 'selenium-webdriver/http';
 
 @Component({
   selector: 'app-sayings',
@@ -21,30 +22,15 @@ export class SayingsComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.drawSayings();
+    await this.drawSayings();
+    await this.updateSayings();
 
     this.iToldUSoService.newSayingObservable.subscribe((saying : Saying) => {
       this.sayings.unshift(saying);  
     });
-
-    let func = (error : Error, saying : Saying) =>{
-      if(saying == undefined){
-        console.error("saying is undefined!");
-        console.log(saying);
-        return;
-      }
-
-      let hash : string = this.iToldUSoService.toAscii(saying.hash);
-			let sayingFound : Saying = this.sayings.filter( x => x.hash === hash)[0];
-			// address : string;
-      sayingFound.text = this.iToldUSoService.toAscii(saying.text);
-    };
-
-    this.iToldUSoService.subscribeToLogTold(func);
-    this.iToldUSoService.queryAllLogTolds(func);
   }
 
-  async drawSayings(){
+  async drawSayings() : Promise<void>{
     this.sayings = new Array<Saying>();
 
     let count : number = await this.iToldUSoService.getSayingCount();
@@ -54,4 +40,32 @@ export class SayingsComponent implements OnInit {
       this.sayings.push(saying);  
     }
   }
+
+
+  async updateSayings() : Promise<void>{
+    let funcBase = (error : Error, result) => {
+      if(!result) return;
+
+      let hash = this.iToldUSoService.toAscii(result.args.textHash);
+      let address = result.args.whoTold;
+        
+      let sayingFound : Saying = 
+        this.sayings.filter( x => 
+          x.hash == hash && 
+          x.address == address)[0];
+      
+      if(!sayingFound) return;
+      sayingFound.text = this.iToldUSoService.toAscii(result.args.text);
+    };
+
+    let func = (error : Error, results) =>{
+      results.forEach( a => {
+        funcBase(null, a);
+      });
+    };
+
+    this.iToldUSoService.subscribeToLogTold(funcBase);
+    this.iToldUSoService.queryAllLogTolds(func);
+  }
+
 }

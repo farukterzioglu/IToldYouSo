@@ -55,16 +55,12 @@ export class IToldUSoService{
 		
 		var myEvent = deployedContrat.LogTold();
 		myEvent.watch(function(error, result){
-			let text : string = result.args.text;
-			let hash : string = result.args.textHash;
-			let address : string = result.args.whoTold; 
-
-			callback(error, {
-				text : text,
-				hash : hash,
-				address : address,
-				blockCount : "1"
-			});
+			if (error != null) {
+				console.warn('There was an error!');
+				console.error();
+				return;
+			}
+			callback(error, result);
 		});
 	}
 
@@ -73,27 +69,15 @@ export class IToldUSoService{
 
 		const deployedContrat = await this.IToldUYouSo.deployed();
 		
-		var myEvent = deployedContrat.LogTold({fromBlock: 0, toBlock: 'latest'});
-		myEvent.get(function(error, result){
+		var myEvent = deployedContrat.LogTold({type: 'mined'}, {fromBlock: 0, toBlock: 'latest'});
+		myEvent.get(function(error, results){
 			if (error != null) {
 				console.warn('There was an error!');
 				console.error();
 				return;
 			}
 
-			console.log(result);
-			return;
-			
-			let text : string = result.args.text;
-			let hash : string = result.args.textHash;
-			let address : string = result.args.whoTold; 
-
-			callback(error, {
-				text : text,
-				hash : hash,
-				address : address,
-				blockCount : "1"
-			});
+			callback(error, results);
 		});
 	}
 
