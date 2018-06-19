@@ -12,7 +12,12 @@
                   <i class="glyphicon glyphicon-time"></i> <u>{{saying.blockCount}}. block</u> by <u>{{saying.address}}</u></small></p>
               </div>
               <div class="timeline-body">
-                <p>{{saying.text}}</p>
+                  <div *ngIf="saying.text != '' ">
+                    <pre>{{saying.text}}</pre>
+                  </div>
+                  <div *ngIf="saying.text == '' ">
+                    <div class="loader"></div>
+                  </div>
               </div>
             </div>
           </li>

@@ -37,10 +37,9 @@ export class SayingsComponent implements OnInit {
     
     for (let index = count -1 ; index >= 0; index--) {
       let saying =await this.iToldUSoService.getSaying(index);
-      this.sayings.push(saying);  
+      this.sayings.push(saying);
     }
   }
-
 
   async updateSayings() : Promise<void>{
     let funcBase = (error : Error, result) => {
@@ -59,12 +58,14 @@ export class SayingsComponent implements OnInit {
     };
 
     let func = (error : Error, results) =>{
-      results.forEach( a => {
-        funcBase(null, a);
-      });
+      for (let index = 0; index < results.length; index++) {
+        // funcBase(null, results[index]);
+        //TODO : for demostration, remove timeout at prod
+        setTimeout(() => { funcBase(null, results[index]); }, (results.length - index) * 500);
+      }
     };
 
-    this.iToldUSoService.subscribeToLogTold(funcBase);
+    // this.iToldUSoService.subscribeToLogTold(funcBase);
     this.iToldUSoService.queryAllLogTolds(func);
   }
 
