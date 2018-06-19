@@ -65,7 +65,7 @@ export class SayingsComponent implements OnInit {
       }
     };
 
-    // this.iToldUSoService.subscribeToLogTold(funcBase);
+    this.iToldUSoService.subscribeToLogTold(funcBase);
     this.iToldUSoService.queryAllLogTolds(func);
   }
 
