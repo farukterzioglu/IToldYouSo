@@ -94,7 +94,6 @@ export class IToldUSoService{
 		let contract = await this.IToldUYouSo.deployed();
 		let saying = await contract.getSaying.call(index);
 
-		//TODO : Get text by event filtering
 		let result : Saying = {
 			text : "",
 			hash : this.web3Service.web3.toAscii(saying[1]),
@@ -120,7 +119,7 @@ export class IToldUSoService{
 			let result = await toldPromise;	
 			
 			let saying : Saying = {
-				text : "",
+				text : text,
 				hash : textHash,
 				address : this.account,
 				blockCount : result.receipt.blockNumber,

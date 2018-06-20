@@ -8,8 +8,8 @@
           <div class="form-group row">
             <label for="btn-told" class="col-sm-2 col-form-label">Your text</label>
             <div class="col-sm-10">
-                <textarea (keyup)="getHash(sayingTextBox.value)" value="{{sayingText}}" #sayingTextBox 
-                  id="sayingTextBox" class="form-control" rows="3"></textarea>  
+                <textarea (keyup)="getHash(sayingTextBox.value)" maxlength="140" value="{{sayingText}}" #sayingTextBox 
+                  id="sayingTextBox" class="form-control" rows="3"></textarea> 
             </div>
           </div>
           

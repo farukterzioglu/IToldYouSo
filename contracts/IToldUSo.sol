@@ -28,9 +28,6 @@ contract IToldUSo{
     }
 
     function told(bytes8 textHash, string text) external {
-        // require(text.length <= textLength);
-        // require(textHash.length == hashLength); 
-
         uint256 blockCount = block.number;  
         uint id = sayings.push(Saying(blockCount, textHash, msg.sender)) - 1;
         sayingToOwner[id] = msg.sender;
