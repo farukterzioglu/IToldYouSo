@@ -78,7 +78,3 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
-//https://stackoverflow.com/questions/50371593/angular-6-uncaught-referenceerror-buffer-is-not-defined?answertab=votes#tab-top
-//TODO : Build fails if this line is uncommented. 
-//TODO : Build and serve first, then uncomment this.
-global.Buffer = global.Buffer || require('buffer').Buffer;
