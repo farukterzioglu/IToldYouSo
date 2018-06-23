@@ -96,9 +96,9 @@ export class IToldUSoService{
 
 		let result : Saying = {
 			text : "",
-			hash : this.web3Service.web3.toAscii(saying[1]),
-			address : saying[2],
-			blockCount : saying[0].toString(10)
+			hash : this.web3Service.web3.toAscii(saying),
+			address : "", //saying[2],
+			blockCount : "", //saying[0].toString(10)
 		}; 
 		return result;
   }

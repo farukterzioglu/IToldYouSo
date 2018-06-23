@@ -49,12 +49,12 @@ export class SayingsComponent implements OnInit {
       const address = result.args.whoTold;
 
       const sayingFound: Saying =
-        this.sayings.filter( x =>
-          x.hash === hash &&
-          x.address === address)[0];
+        this.sayings.filter( x => x.hash === hash)[0];
 
       if (!sayingFound) { return; }
       sayingFound.text = this.iToldUSoService.toAscii(result.args.text);
+      sayingFound.blockCount = result.blockNumber;
+      sayingFound.address = result.args.whoTold;
     };
 
     const func = (error: Error, results) => {
