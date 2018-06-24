@@ -51,10 +51,21 @@ export class SayingsComponent implements OnInit {
       const sayingFound: Saying =
         this.sayings.filter( x => x.hash === hash)[0];
 
-      if (!sayingFound) { return; }
-      sayingFound.text = this.iToldUSoService.toAscii(result.args.text);
-      sayingFound.blockCount = result.blockNumber;
-      sayingFound.address = result.args.whoTold;
+      if (sayingFound) { 
+        sayingFound.text = this.iToldUSoService.toAscii(result.args.text);
+        sayingFound.blockCount = result.blockNumber;
+        sayingFound.address = result.args.whoTold;
+      }
+      else {
+        let newSaying : Saying = new Saying();
+        
+        newSaying.text = this.iToldUSoService.toAscii(result.args.text);
+        newSaying.blockCount = result.blockNumber;
+        newSaying.address = result.args.whoTold;
+        newSaying.hash = this.iToldUSoService.toAscii(result.args.textHash);
+
+        this.sayings.unshift(newSaying);
+      }
     };
 
     const func = (error: Error, results) => {
@@ -67,6 +78,8 @@ export class SayingsComponent implements OnInit {
 
     this.iToldUSoService.subscribeToLogTold(funcBase);
     this.iToldUSoService.queryAllLogTolds(func);
+    // this.iToldUSoService.watchAllEvents();
+    // this.iToldUSoService.filterAll();
   }
 
 }

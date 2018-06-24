@@ -48,6 +48,28 @@ export class IToldUSoService{
     });
 	}
 
+	public async filterAll() : Promise<void>{
+		var options  = {
+
+		};
+		var filter = this.web3Service.web3.eth.filter(options);
+
+		filter.watch(function(error, result){
+			if (!error)
+				console.log(result);
+		});
+	}
+	
+	public async watchAllEvents() : Promise<void> {
+		if(!this.IToldUYouSo) await this.initializeContract();
+		const deployedContrat = await this.IToldUYouSo.deployed();
+
+		var events = deployedContrat.allEvents(function(error, log){
+			if (!error)
+				console.log(log);
+		});
+	}
+
 	public async subscribeToLogTold(callback : (error : Error, result : Saying) => void ) : Promise<void> {
 		if(!this.IToldUYouSo) await this.initializeContract();
 
