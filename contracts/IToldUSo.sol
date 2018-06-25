@@ -8,9 +8,8 @@ contract IToldUSo{
         address teller;
     }
 
-    bytes8[] public sayings;
-    mapping(uint => address) sayingToOwner;
-    mapping(address => uint) ownerSayingCount;
+    uint sayingsCount = 0;
+    mapping(uint => bytes8) sayings;
 
     //Privates 
     uint16 hashLength = 20;
@@ -23,16 +22,14 @@ contract IToldUSo{
 
     //Modifiers
     modifier validSaying(uint id) {
-        require(id >= 0 && id < sayings.length);
+        require(id >= 0 && id < sayingsCount);
         _;
     }
 
     function told(bytes8 textHash, string text) external {
-        uint256 blockCount = block.number;  
-        uint id = sayings.push(textHash) - 1;
-        sayingToOwner[id] = msg.sender;
+        sayings[++sayingsCount] = textHash;
 
-        emit LogTold(blockCount,  textHash, msg.sender, text);
+        emit LogTold(block.number,  textHash, msg.sender, text);
     }
     
     function getSaying(uint id) validSaying(id) public view returns (bytes8) { // (uint, bytes8, address){
@@ -41,7 +38,7 @@ contract IToldUSo{
     }
 
     function getSayingCount() external view returns(uint){
-        return sayings.length;
+        return sayingsCount;
     }
 
     // function verify(uint32 blockCount, bytes20 textHash, address teller) external view returns(bool){
